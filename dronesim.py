@@ -1,4 +1,5 @@
 #! python
+#! python
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,36 +9,120 @@ g = 9.81  # Acceleration due to gravity (m/s^2)
 MAX_THRUST = 30.0  # Maximum thrust (N)
 MAX_VELOCITY = 50.0  # Maximum velocity (m/s)
 
-# Drone parameters
-mass = 1.5  # Mass of the drone (kg)
-rotor_area = 0.1  # Rotor area (m^2)
-air_density = 1.225  # Air density at sea level (kg/m^3)
-C_L = 1.0  # Lift coefficient (assumed constant for simplicity)
-C_D = 0.1  # Drag coefficient (assumed constant for simplicity)
 
-# Desired altitude
-target_altitude = 100.0  # Target altitude to hover at (m)
+class Drone:
+    def __init__(self, mass, rotor_area, air_density, C_L, C_D):
+        self.mass = mass
+        self.rotor_area = rotor_area
+        self.air_density = air_density
+        self.C_L = C_L
+        self.C_D = C_D
+        self.altitude = 0.0
+        self.velocity = 0.0
+        self.thrust = self.calculate_weight()
 
-# Functions to calculate forces
+    def calculate_lift(self):
+        """Calculate lift force based on thrust."""
+        return self.thrust
+
+    def calculate_weight(self):
+        """Calculate weight of the drone."""
+        return self.mass * g
+
+    def calculate_drag(self):
+        """Calculate drag force based on velocity."""
+        return self.C_D * 0.5 * self.air_density * self.rotor_area * self.velocity**2
+
+    def update(self, time_step):
+        lift = self.calculate_lift()
+        weight = self.calculate_weight()
+        drag = self.calculate_drag()
+
+        net_force = lift - weight - drag
+        acceleration = net_force / self.mass
+
+        self.velocity += acceleration * time_step
+        self.altitude += self.velocity * time_step
+
+        return acceleration
+
+    def set_thrust(self, thrust):
+        self.thrust = max(min(thrust, MAX_THRUST), 0)
 
 
-def calculate_lift(thrust):
-    """Calculate lift force based on thrust."""
-    return thrust
+class PIDController:
+    def __init__(self, kp, ki, kd):
+        self.kp = kp
+        self.ki = ki
+        self.kd = kd
+        self.integral = 0
+        self.previous_error = 0
+
+    def compute(self, error, time_step):
+        self.integral += error * time_step
+        derivative = (error - self.previous_error) / time_step
+        output = (self.kp * error +
+                  self.ki * self.integral +
+                  self.kd * derivative)
+        self.previous_error = error
+        return output
 
 
-def calculate_weight(mass):
-    """Calculate weight of the drone."""
-    return mass * g
+class SimulationResults:
+    def __init__(self, num_steps):
+        self.time_array = np.zeros(num_steps)
+        self.altitude_array = np.zeros(num_steps)
+        self.velocity_array = np.zeros(num_steps)
+        self.thrust_array = np.zeros(num_steps)
+        self.acceleration_array = np.zeros(num_steps)
 
+    def update(self, i, time, drone, acceleration):
+        self.time_array[i] = time
+        self.altitude_array[i] = drone.altitude
+        self.velocity_array[i] = drone.velocity
+        self.thrust_array[i] = drone.thrust
+        self.acceleration_array[i] = acceleration
 
-def calculate_drag(velocity):
-    """Calculate drag force based on velocity."""
-    return C_D * 0.5 * air_density * rotor_area * velocity**2
+    def plot(self, target_altitude):
+        plt.figure(figsize=(12, 10))
 
+        plt.subplot(4, 1, 1)
+        plt.plot(self.time_array, self.altitude_array,
+                 label='Altitude (m)', color='blue')
+        plt.axhline(y=target_altitude, color='red',
+                    linestyle='--', label='Target Altitude')
+        plt.title('Drone Flight Simulation with PID Control')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Altitude (m)')
+        plt.grid()
+        plt.legend()
 
-# Desired speed
-target_speed = 10.0  # Target speed to achieve (m/s)
+        plt.subplot(4, 1, 2)
+        plt.plot(self.time_array, self.velocity_array,
+                 label='Velocity (m/s)', color='red')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Velocity (m/s)')
+        plt.grid()
+        plt.legend()
+
+        plt.subplot(4, 1, 3)
+        plt.plot(self.time_array, self.thrust_array,
+                 label='Thrust (N)', color='green')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Thrust (N)')
+        plt.grid()
+        plt.legend()
+
+        plt.subplot(4, 1, 4)
+        plt.plot(self.time_array, self.acceleration_array,
+                 label='Acceleration (m/s²)', color='purple')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Acceleration (m/s²)')
+        plt.grid()
+        plt.legend()
+
+        plt.tight_layout()
+        plt.show()
 
 
 # Simulation parameters
@@ -45,107 +130,35 @@ time_step = 0.1  # Time step for simulation (s)
 total_time = 30.0  # Total time for simulation (s)
 num_steps = int(total_time / time_step)
 
-# Initialize arrays to store results
-time_array = np.linspace(0, total_time, num_steps)
-altitude_array = np.zeros(num_steps)
-velocity_array = np.zeros(num_steps)
-thrust_array = np.zeros(num_steps)  # Array to store thrust values
-acceleration_array = np.zeros(num_steps)  # Array to store acceleration values
 
-# Initial conditions
-thrust = calculate_weight(mass)  # Initial thrust equal to weight (N)
-altitude = 0.0  # Initial altitude (m)
-velocity = 0.0  # Initial velocity (m/s)
-
-# PID controller parameters for speed control
-K_p_speed = 0.5  # Proportional gain for speed
-K_i_speed = 0.1  # Integral gain for speed
-K_d_speed = 0.2  # Derivative gain for speed
+# Create drone and controllers
+drone = Drone(mass=1.5, rotor_area=0.1, air_density=1.225, C_L=1.0, C_D=0.1)
+speed_controller = PIDController(kp=0.5, ki=0.1, kd=0.2)
+altitude_controller = PIDController(kp=0.2, ki=0, kd=0)
+results = SimulationResults(num_steps)
 
 
-# Altitude control parameters
-K_p_altitude = 0.2  # Proportional gain for altitude
-
-# Initialize error variables
-integral_error_speed = 0
-previous_error_speed = 0
+target_altitude = 100.0  # Target altitude to hover at (m)
 
 # Simulation loop
-for i in range(1, num_steps):
-    lift = calculate_lift(thrust)
-    weight = calculate_weight(mass)
+for i in range(num_steps):
+    current_time = i * time_step
 
-    # Altitude control logic
-    altitude_error = target_altitude - altitude
-    speed_reference = K_p_altitude * altitude_error
-
-    # Limit the speed reference
+    # Altitude control
+    altitude_error = target_altitude - drone.altitude
+    speed_reference = altitude_controller.compute(altitude_error, time_step)
     speed_reference = max(min(speed_reference, MAX_VELOCITY), -MAX_VELOCITY)
 
-    # Speed control logic
-    speed_error = speed_reference - velocity
-    integral_error_speed += speed_error * time_step
-    derivative_error_speed = (speed_error - previous_error_speed) / time_step
+    # Speed control
+    speed_error = speed_reference - drone.velocity
+    thrust_adjustment = speed_controller.compute(speed_error, time_step)
+    drone.set_thrust(drone.thrust + thrust_adjustment)
 
-    thrust_adjustment = (K_p_speed * speed_error +
-                         K_i_speed * integral_error_speed +
-                         K_d_speed * derivative_error_speed)
-    thrust += thrust_adjustment
-
-    # Limit thrust to be between a minimum (e.g., 0) and MAX_THRUST
-    thrust = max(min(thrust, MAX_THRUST), 0)
-
-    previous_error_speed = speed_error
-
-    thrust_array[i] = thrust  # Store current thrust value
-
-    # Calculate net force and acceleration
-    net_force = lift - weight - calculate_drag(velocity)
-    acceleration = net_force / mass
-    acceleration_array[i] = acceleration  # Store current acceleration value
-
-    # Update velocity and altitude
-    velocity += acceleration * time_step
-    altitude += velocity * time_step
+    # Update drone state
+    acceleration = drone.update(time_step)
 
     # Store results
-    velocity_array[i] = velocity
-    altitude_array[i] = altitude
+    results.update(i, current_time, drone, acceleration)
 
-# Plotting results
-plt.figure(figsize=(12, 10))
-
-plt.subplot(4, 1, 1)
-plt.plot(time_array, altitude_array, label='Altitude (m)', color='blue')
-plt.axhline(y=target_altitude, color='red',
-            linestyle='--', label='Target Altitude')
-plt.title('Drone Flight Simulation with Thrust Control')
-plt.xlabel('Time (s)')
-plt.ylabel('Altitude (m)')
-plt.grid()
-plt.legend()
-
-plt.subplot(4, 1, 2)
-plt.plot(time_array, velocity_array, label='Velocity (m/s)', color='red')
-plt.xlabel('Time (s)')
-plt.ylabel('Velocity (m/s)')
-plt.grid()
-plt.legend()
-
-plt.subplot(4, 1, 3)
-plt.plot(time_array, thrust_array, label='Thrust (N)', color='green')
-plt.xlabel('Time (s)')
-plt.ylabel('Thrust (N)')
-plt.grid()
-plt.legend()
-
-plt.subplot(4, 1, 4)
-plt.plot(time_array, acceleration_array,
-         label='Acceleration (m/s²)', color='purple')
-plt.xlabel('Time (s)')
-plt.ylabel('Acceleration (m/s²)')
-plt.grid()
-plt.legend()
-
-plt.tight_layout()
-plt.show()
+# Plot results
+results.plot(target_altitude)
