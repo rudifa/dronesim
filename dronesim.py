@@ -36,6 +36,10 @@ def calculate_drag(velocity):
     return C_D * 0.5 * air_density * rotor_area * velocity**2
 
 
+# Desired speed
+target_speed = 10.0  # Target speed to achieve (m/s)
+
+
 # Simulation parameters
 time_step = 0.1  # Time step for simulation (s)
 total_time = 30.0  # Total time for simulation (s)
@@ -53,32 +57,41 @@ thrust = calculate_weight(mass)  # Initial thrust equal to weight (N)
 altitude = 0.0  # Initial altitude (m)
 velocity = 0.0  # Initial velocity (m/s)
 
+# PID controller parameters
+K_p = 0.5  # Proportional gain
+K_i = 0.1  # Integral gain
+K_d = 0.2  # Derivative gain
+integral_error = 0
+previous_error = 0
+
 # Simulation loop
 for i in range(1, num_steps):
     lift = calculate_lift(thrust)
     weight = calculate_weight(mass)
 
-    # Thrust control logic for hovering at target altitude
-    altitude_error = target_altitude - altitude
-    K_p = 0.05  # Proportional gain
-    thrust_adjustment = K_p * altitude_error
+    # Speed control logic
+    speed_error = target_speed - velocity
+    integral_error += speed_error * time_step
+    derivative_error = (speed_error - previous_error) / time_step
+
+    thrust_adjustment = K_p * speed_error + K_i * \
+        integral_error + K_d * derivative_error
     thrust += thrust_adjustment
 
-    # Limit thrust to be between weight and MAX_THRUST
-    thrust = max(min(thrust, MAX_THRUST), weight/3)
+    # Limit thrust to be between a minimum (e.g., 0) and MAX_THRUST
+    thrust = max(min(thrust, MAX_THRUST), 0)
+
+    previous_error = speed_error
 
     thrust_array[i] = thrust  # Store current thrust value
 
-    # Calculate net force and ensure velocity is capped
-    net_force = lift - weight - calculate_drag(min(velocity, MAX_VELOCITY))
+    # Calculate net force and acceleration
+    net_force = lift - weight - calculate_drag(velocity)
     acceleration = net_force / mass
     acceleration_array[i] = acceleration  # Store current acceleration value
 
-    # Update velocity and altitude with safety checks
+    # Update velocity and altitude
     velocity += acceleration * time_step
-    if abs(velocity) > MAX_VELOCITY:
-        velocity = np.sign(velocity) * MAX_VELOCITY
-
     altitude += velocity * time_step
 
     # Store results
