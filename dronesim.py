@@ -57,31 +57,45 @@ thrust = calculate_weight(mass)  # Initial thrust equal to weight (N)
 altitude = 0.0  # Initial altitude (m)
 velocity = 0.0  # Initial velocity (m/s)
 
-# PID controller parameters
-K_p = 0.5  # Proportional gain
-K_i = 0.1  # Integral gain
-K_d = 0.2  # Derivative gain
-integral_error = 0
-previous_error = 0
+# PID controller parameters for speed control
+K_p_speed = 0.5  # Proportional gain for speed
+K_i_speed = 0.1  # Integral gain for speed
+K_d_speed = 0.2  # Derivative gain for speed
+
+
+# Altitude control parameters
+K_p_altitude = 0.2  # Proportional gain for altitude
+
+# Initialize error variables
+integral_error_speed = 0
+previous_error_speed = 0
 
 # Simulation loop
 for i in range(1, num_steps):
     lift = calculate_lift(thrust)
     weight = calculate_weight(mass)
 
-    # Speed control logic
-    speed_error = target_speed - velocity
-    integral_error += speed_error * time_step
-    derivative_error = (speed_error - previous_error) / time_step
+    # Altitude control logic
+    altitude_error = target_altitude - altitude
+    speed_reference = K_p_altitude * altitude_error
 
-    thrust_adjustment = K_p * speed_error + K_i * \
-        integral_error + K_d * derivative_error
+    # Limit the speed reference
+    speed_reference = max(min(speed_reference, MAX_VELOCITY), -MAX_VELOCITY)
+
+    # Speed control logic
+    speed_error = speed_reference - velocity
+    integral_error_speed += speed_error * time_step
+    derivative_error_speed = (speed_error - previous_error_speed) / time_step
+
+    thrust_adjustment = (K_p_speed * speed_error +
+                         K_i_speed * integral_error_speed +
+                         K_d_speed * derivative_error_speed)
     thrust += thrust_adjustment
 
     # Limit thrust to be between a minimum (e.g., 0) and MAX_THRUST
     thrust = max(min(thrust, MAX_THRUST), 0)
 
-    previous_error = speed_error
+    previous_error_speed = speed_error
 
     thrust_array[i] = thrust  # Store current thrust value
 
