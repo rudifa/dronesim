@@ -68,27 +68,82 @@ class PIDController:
         return output
 
 
+class SimulationResults:
+    def __init__(self, num_steps):
+        self.time_array = np.zeros(num_steps)
+        self.altitude_array = np.zeros(num_steps)
+        self.velocity_array = np.zeros(num_steps)
+        self.thrust_array = np.zeros(num_steps)
+        self.acceleration_array = np.zeros(num_steps)
+
+    def update(self, i, time, drone, acceleration):
+        self.time_array[i] = time
+        self.altitude_array[i] = drone.altitude
+        self.velocity_array[i] = drone.velocity
+        self.thrust_array[i] = drone.thrust
+        self.acceleration_array[i] = acceleration
+
+    def plot(self, target_altitude):
+        plt.figure(figsize=(12, 10))
+
+        plt.subplot(4, 1, 1)
+        plt.plot(self.time_array, self.altitude_array,
+                 label='Altitude (m)', color='blue')
+        plt.axhline(y=target_altitude, color='red',
+                    linestyle='--', label='Target Altitude')
+        plt.title('Drone Flight Simulation with PID Control')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Altitude (m)')
+        plt.grid()
+        plt.legend()
+
+        plt.subplot(4, 1, 2)
+        plt.plot(self.time_array, self.velocity_array,
+                 label='Velocity (m/s)', color='red')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Velocity (m/s)')
+        plt.grid()
+        plt.legend()
+
+        plt.subplot(4, 1, 3)
+        plt.plot(self.time_array, self.thrust_array,
+                 label='Thrust (N)', color='green')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Thrust (N)')
+        plt.grid()
+        plt.legend()
+
+        plt.subplot(4, 1, 4)
+        plt.plot(self.time_array, self.acceleration_array,
+                 label='Acceleration (m/s²)', color='purple')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Acceleration (m/s²)')
+        plt.grid()
+        plt.legend()
+
+        plt.tight_layout()
+        plt.show()
+
+
 # Simulation parameters
 time_step = 0.1  # Time step for simulation (s)
 total_time = 30.0  # Total time for simulation (s)
 num_steps = int(total_time / time_step)
 
-# Initialize arrays to store results
-time_array = np.linspace(0, total_time, num_steps)
-altitude_array = np.zeros(num_steps)
-velocity_array = np.zeros(num_steps)
-thrust_array = np.zeros(num_steps)
-acceleration_array = np.zeros(num_steps)
 
 # Create drone and controllers
 drone = Drone(mass=1.5, rotor_area=0.1, air_density=1.225, C_L=1.0, C_D=0.1)
 speed_controller = PIDController(kp=0.5, ki=0.1, kd=0.2)
 altitude_controller = PIDController(kp=0.2, ki=0, kd=0)
+results = SimulationResults(num_steps)
+
 
 target_altitude = 100.0  # Target altitude to hover at (m)
 
 # Simulation loop
-for i in range(1, num_steps):
+for i in range(num_steps):
+    current_time = i * time_step
+
     # Altitude control
     altitude_error = target_altitude - drone.altitude
     speed_reference = altitude_controller.compute(altitude_error, time_step)
@@ -103,45 +158,7 @@ for i in range(1, num_steps):
     acceleration = drone.update(time_step)
 
     # Store results
-    altitude_array[i] = drone.altitude
-    velocity_array[i] = drone.velocity
-    thrust_array[i] = drone.thrust
-    acceleration_array[i] = acceleration
+    results.update(i, current_time, drone, acceleration)
 
-# Plotting results
-plt.figure(figsize=(12, 10))
-
-plt.subplot(4, 1, 1)
-plt.plot(time_array, altitude_array, label='Altitude (m)', color='blue')
-plt.axhline(y=target_altitude, color='red',
-            linestyle='--', label='Target Altitude')
-plt.title('Drone Flight Simulation with PID Control')
-plt.xlabel('Time (s)')
-plt.ylabel('Altitude (m)')
-plt.grid()
-plt.legend()
-
-plt.subplot(4, 1, 2)
-plt.plot(time_array, velocity_array, label='Velocity (m/s)', color='red')
-plt.xlabel('Time (s)')
-plt.ylabel('Velocity (m/s)')
-plt.grid()
-plt.legend()
-
-plt.subplot(4, 1, 3)
-plt.plot(time_array, thrust_array, label='Thrust (N)', color='green')
-plt.xlabel('Time (s)')
-plt.ylabel('Thrust (N)')
-plt.grid()
-plt.legend()
-
-plt.subplot(4, 1, 4)
-plt.plot(time_array, acceleration_array,
-         label='Acceleration (m/s²)', color='purple')
-plt.xlabel('Time (s)')
-plt.ylabel('Acceleration (m/s²)')
-plt.grid()
-plt.legend()
-
-plt.tight_layout()
-plt.show()
+# Plot results
+results.plot(target_altitude)
