@@ -1,5 +1,4 @@
-#! python
-#! python
+#!/Users/rudifarkas/opt/anaconda3/bin/python
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -87,7 +86,7 @@ class SimulationResults:
         # Store target altitude
         self.target_altitude_array[i] = target_altitude
 
-    def plot(self, target_altitude):
+    def plot(self):
         plt.figure(figsize=(12, 10))
 
         plt.subplot(4, 1, 1)
@@ -171,4 +170,4 @@ for i in range(num_steps):
     results.update(i, current_time, drone, acceleration, target_altitude)
 
 # Plot results
-results.plot(target_altitude)
+results.plot()
