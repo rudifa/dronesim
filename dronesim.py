@@ -75,13 +75,17 @@ class SimulationResults:
         self.velocity_array = np.zeros(num_steps)
         self.thrust_array = np.zeros(num_steps)
         self.acceleration_array = np.zeros(num_steps)
+        self.target_altitude_array = np.zeros(
+            num_steps)  # New array for target altitude
 
-    def update(self, i, time, drone, acceleration):
+    def update(self, i, time, drone, acceleration, target_altitude):  # Added target_altitude parameter
         self.time_array[i] = time
         self.altitude_array[i] = drone.altitude
         self.velocity_array[i] = drone.velocity
         self.thrust_array[i] = drone.thrust
         self.acceleration_array[i] = acceleration
+        # Store target altitude
+        self.target_altitude_array[i] = target_altitude
 
     def plot(self, target_altitude):
         plt.figure(figsize=(12, 10))
@@ -89,8 +93,8 @@ class SimulationResults:
         plt.subplot(4, 1, 1)
         plt.plot(self.time_array, self.altitude_array,
                  label='Altitude (m)', color='blue')
-        plt.axhline(y=target_altitude, color='red',
-                    linestyle='--', label='Target Altitude')
+        plt.plot(self.time_array, self.target_altitude_array,
+                 color='red', linestyle='--', label='Target Altitude')
         plt.title('Drone Flight Simulation with PID Control')
         plt.xlabel('Time (s)')
         plt.ylabel('Altitude (m)')
@@ -127,7 +131,7 @@ class SimulationResults:
 
 # Simulation parameters
 time_step = 0.1  # Time step for simulation (s)
-total_time = 30.0  # Total time for simulation (s)
+total_time = 60.0  # Total time for simulation (s)
 num_steps = int(total_time / time_step)
 
 
@@ -138,11 +142,17 @@ altitude_controller = PIDController(kp=0.2, ki=0, kd=0)
 results = SimulationResults(num_steps)
 
 
-target_altitude = 100.0  # Target altitude to hover at (m)
+# Target altitude to hover at (m)
+def get_target_altitude(time):
+    return 100.0 if time <= 30.0 else 40.0
+
 
 # Simulation loop
 for i in range(num_steps):
     current_time = i * time_step
+
+    # Get target altitude for current time
+    target_altitude = get_target_altitude(current_time)
 
     # Altitude control
     altitude_error = target_altitude - drone.altitude
@@ -158,7 +168,7 @@ for i in range(num_steps):
     acceleration = drone.update(time_step)
 
     # Store results
-    results.update(i, current_time, drone, acceleration)
+    results.update(i, current_time, drone, acceleration, target_altitude)
 
 # Plot results
 results.plot(target_altitude)
