@@ -30,7 +30,3 @@ Time    Altitude    Velocity    Thrust  Acceleration    Target Alt
 0.2 0.611146        3.05488     30  10.173      100
 ...
 ```
-
-# MSPlot : a math simple plot
-
-> A tiny subset of mathplotlib features

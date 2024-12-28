@@ -1,0 +1,47 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="500px" height="500px" xmlns="http://www.w3.org/2000/svg" version="1.1" >
+	<polygon points="0,500 500,500 500,0 0,0 " fill="none" stroke-width="5" stroke="rgb(255,0,0)" />
+	<polyline points="0,500 50,350 100,300 150,275 200,280 " fill="none" stroke-width="3" stroke="rgb(0,0,255)" />
+	<circle cx="0" cy="500" r="3.75" fill="rgb(0,0,0)" />
+	<circle cx="50" cy="350" r="3.75" fill="rgb(0,0,0)" />
+	<circle cx="100" cy="300" r="3.75" fill="rgb(0,0,0)" />
+	<circle cx="150" cy="275" r="3.75" fill="rgb(0,0,0)" />
+	<circle cx="200" cy="280" r="3.75" fill="rgb(0,0,0)" />
+	<polyline points="0,450 50,390 100,350 150,340 200,350 " fill="none" stroke-width="3" stroke="rgb(0,255,255)" />
+	<circle cx="0" cy="450" r="3.75" fill="rgb(0,0,0)" />
+	<circle cx="50" cy="390" r="3.75" fill="rgb(0,0,0)" />
+	<circle cx="100" cy="350" r="3.75" fill="rgb(0,0,0)" />
+	<circle cx="150" cy="340" r="3.75" fill="rgb(0,0,0)" />
+	<circle cx="200" cy="350" r="3.75" fill="rgb(0,0,0)" />
+	<polyline points="0,440 50,425 100,430 150,450 200,490 " fill="none" stroke-width="3" stroke="rgb(255,0,255)" />
+	<circle cx="0" cy="440" r="3.75" fill="rgb(0,0,0)" />
+	<circle cx="50" cy="425" r="3.75" fill="rgb(0,0,0)" />
+	<circle cx="100" cy="430" r="3.75" fill="rgb(0,0,0)" />
+	<circle cx="150" cy="450" r="3.75" fill="rgb(0,0,0)" />
+	<circle cx="200" cy="490" r="3.75" fill="rgb(0,0,0)" />
+	<polyline points="0,252.5 0,500 220,500 " fill="none" stroke-width="0.5" stroke="rgb(128,0,128)" />
+	<polyline points="325,475 375,435 425,410 " fill="none" stroke-width="2.5" stroke="rgb(0,0,255)" />
+	<circle cx="325" cy="475" r="1.66667" fill="rgb(0,0,0)" />
+	<circle cx="375" cy="435" r="1.66667" fill="rgb(0,0,0)" />
+	<circle cx="425" cy="410" r="1.66667" fill="rgb(0,0,0)" />
+	<polyline points="325,425 375,395 425,375 " fill="none" stroke-width="2.5" stroke="rgb(255,165,0)" />
+	<circle cx="325" cy="425" r="1.66667" fill="rgb(0,0,0)" />
+	<circle cx="375" cy="395" r="1.66667" fill="rgb(0,0,0)" />
+	<circle cx="425" cy="375" r="1.66667" fill="rgb(0,0,0)" />
+	<polyline points="325,450 375,410 425,395 " fill="none" stroke-width="2.5" stroke="rgb(0,255,255)" />
+	<circle cx="325" cy="450" r="1.66667" fill="rgb(0,0,0)" />
+	<circle cx="375" cy="410" r="1.66667" fill="rgb(0,0,0)" />
+	<circle cx="425" cy="395" r="1.66667" fill="rgb(0,0,0)" />
+	<polyline points="325,365 325,475 435,475 " fill="none" stroke-width="0.5" stroke="rgb(128,0,128)" />
+	<circle cx="400" cy="100" r="50" fill="rgb(100,200,120)" stroke-width="5" stroke="rgb(200,250,150)" />
+	<text x="25" y="115" fill="rgb(192,192,192)" font-size="50" font-family="Verdana" >Simple SVG</text>
+	<polygon points="100,150 125,140 165,150 175,200 125,225 90,185 " fill="rgb(200,160,220)" stroke-width="2.5" stroke="rgb(150,160,200)" />
+	<rect x="350" y="225" width="100" height="75" fill="rgb(255,255,0)" />
+	<g fill="rgb(255,0,0)" stroke-width="2" stroke="rgb(0,0,0)" >
+	<circle cx="100" cy="400" r="25" fill="rgb(0,0,255)" />
+	<rect x="200" y="300" width="100" height="50" fill="rgb(0,128,0)" />
+	<text x="0" y="500" fill="rgb(0,0,0)" font-size="10" font-family="Verdana"  transform="rotate(90 0 0)">Hello world!</text>
+	<text x="0" y="500" fill="rgb(0,0,0)" font-size="10" font-family="Verdana"  transform="rotate(-5 0 0)">Hello world!</text>
+</g>
+</svg>
