@@ -128,3 +128,35 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+# Compiled object files
+*.o
+*.obj
+
+# Compiled dynamic libraries
+*.so
+*.dll
+
+# Compiled static libraries
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Build directories
+/build/
+/bin/
+/obj/
+
+# IDE-specific files
+*.layout
+*.depend
+
+# Precompiled headers
+*.gch
+*.pch
+
+# macOS
+.DS_Store
