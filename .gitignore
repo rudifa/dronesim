@@ -137,6 +137,29 @@ dmypy.json
 *.dll
 
 # Compiled static libraries
+build/
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
 *.a
 *.lib
 
@@ -145,6 +168,7 @@ dmypy.json
 *.out
 *.app
 
+<<<<<<< HEAD
 # Build directories
 /build/
 /bin/
@@ -160,3 +184,7 @@ dmypy.json
 
 # macOS
 .DS_Store
+=======
+# Build products
+bin/
+>>>>>>> simple_svg/main
