@@ -4,7 +4,15 @@
 
 ![Simulation Image](img/dronesim-02.png)
 
-## build and run
+## build with cmake
+
+```
+dronesim % mkdir -p build && cd build
+build % cmake ..
+build % cmake --build .
+```
+
+## simple build and run
 
 ```
 dronesim %cd src/dronesim
