@@ -28,7 +28,8 @@ int main()
         results->update(i, current_time, *drone, acceleration, target_altitude);
     }
 
-    results->print();
+    // results->print();
+    results->plot();
 
     return 0;
 }

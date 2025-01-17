@@ -5,6 +5,8 @@
 #include <memory>
 #include <iostream>
 
+#include "../msplot/msplot.hpp"
+
 const double g = 9.81;
 const double MAX_THRUST = 30.0;
 const double MAX_VELOCITY = 50.0;
@@ -63,6 +65,7 @@ public:
     void update(size_t i, double time, const Drone &drone, double acceleration, double target_altitude);
 
     void print() const;
+    void plot() const;
 };
 
 double get_target_altitude(double time);

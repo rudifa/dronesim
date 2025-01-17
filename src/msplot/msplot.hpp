@@ -50,23 +50,20 @@ class MSPlot
                     y_max = std::max(y_max, point.y);
                 }
 
-                // Add data polyline
-                Polyline polyline(Stroke(1, color));
-                for (const auto& point : data) {
-                    double scaled_x = x_pos + (point.x - x_min) / (x_max - x_min) * width;
-                    double scaled_y = y_pos + height - (point.y - y_min) / (y_max - y_min) * height;
-                    polyline << Point(scaled_x, scaled_y);
-                }
-                group << polyline;
-
                 // Add x and y axes
-                group << Line(Point(x_pos, y_pos), Point(x_pos + width, y_pos), Stroke(1, Color::Black)); // X-axis
-                group << Line(Point(x_pos, y_pos + height), Point(x_pos + width, y_pos + height), Stroke(1, Color::Black)); // X-axis
+                group << Line(Point(x_pos, y_pos), Point(x_pos + width, y_pos),
+                              Stroke(1, Color(Color::Black))); // X-axis
+                group << Line(Point(x_pos, y_pos + height),
+                              Point(x_pos + width, y_pos + height),
+                              Stroke(1, Color(Color::Black))); // X-axis
 
-                group << Line(Point(x_pos, y_pos), Point(x_pos, y_pos + height), Stroke(1, Color::Black)); // Y-axis
-                group << Line(Point(x_pos + width, y_pos), Point(x_pos + width, y_pos + height), Stroke(1, Color::Black)); // Y-axis
+                group << Line(Point(x_pos, y_pos), Point(x_pos, y_pos + height),
+                              Stroke(1, Color(Color::Black))); // Y-axis
+                group << Line(Point(x_pos + width, y_pos),
+                              Point(x_pos + width, y_pos + height),
+                              Stroke(1, Color(Color::Black))); // Y-axis
 
-                // Add axis ticks and values
+                // Add x axis ticks and values
                 const int n = 5;
                 for (int i = 0; i <= n; i++)
                 {
@@ -74,12 +71,27 @@ class MSPlot
                     double x_pos_tick = x_pos + width * i / n;
                     // Add tick mark and value
                     group << Line(Point(x_pos_tick, y_pos + height),
-                                    Point(x_pos_tick, y_pos + height + 5),
-                                    Stroke(1, Color::Black));
+                                  Point(x_pos_tick, y_pos + height + 5),
+                                  Stroke(1, Color(Color::Black)));
                     group << Text(Point(x_pos_tick, y_pos + height + 15),
-                                    std::to_string(x_val),
-                                    Fill(Color::Black),
-                                    Font(10, "Arial"));
+                                  formatValue(x_val),
+                                   Fill(Color::Black),
+                                  Font(10, "Arial"));
+                }
+
+                // Add y axis ticks and values
+                for (int i = 0; i <= n; i++)
+                {
+                    double y_val = y_min + (y_max - y_min) * i / n;
+                    double y_pos_tick = y_pos + height - (height * i / n);
+                    // Add tick mark and value
+                    group << Line(Point(x_pos, y_pos_tick),
+                                  Point(x_pos - 5, y_pos_tick),
+                                  Stroke(1, Color(Color::Black)));
+                    group << Text(Point(x_pos - 15, y_pos_tick),
+                                  formatValue(y_val),
+                                   Fill(Color::Black),
+                                  Font(10, "Arial"));
                 }
 
                 // Add labels
@@ -92,6 +104,18 @@ class MSPlot
 
                 Text title(Point(x_pos + width / 2, y_pos - 10), label, Fill(Color::Black), Font(14, "Arial"));
                 group << title;
+
+                // Add data polyline
+                Polyline polyline(Stroke(2, color));
+                for (const auto &point : data) {
+                    double scaled_x =
+                        x_pos + (point.x - x_min) / (x_max - x_min) * width;
+                    double scaled_y =
+                        y_pos + height -
+                        (point.y - y_min) / (y_max - y_min) * height;
+                    polyline << Point(scaled_x, scaled_y);
+                }
+                group << polyline;
 
                 return group;
             }
@@ -127,6 +151,12 @@ class MSPlot
         }
     };
 
+    static std::string formatValue(double value, int precision = 2) {
+        std::ostringstream ss;
+        ss << std::fixed << std::setprecision(precision) << value;
+        return ss.str();
+    }
+
     public:
 
     class Figure
@@ -160,8 +190,8 @@ class MSPlot
         }
 
         void plot(const std::vector<double> &x, const std::vector<double> &y,
-                const std::string &label = "", const Color &color = Color::Blue)
-        {
+                  const std::string &label = "",
+                  const Color &color = Color(Color::Blue)) {
             std::cerr << "Figure::plot, " << label  << std::endl;
 
             if (subplots.empty()) {
@@ -177,7 +207,7 @@ class MSPlot
             auto &subplot = getCurrentSubplot();
             subplot.data.clear(); // Clear any existing data
             for (size_t i = 0; i < x.size(); i++) {
-                subplot.data.push_back({x[i], y[i]});
+                subplot.data.push_back(Point(x[i], y[i]));
             }
             subplot.label = label;
             subplot.color = color;

@@ -87,15 +87,50 @@ void SimulationResults::print() const
     for (size_t i = 0; i < time_array.size(); ++i)
     {
         std::cout << time_array[i] << "\t"
+                  << target_altitude_array[i] << "\t\t"
                   << altitude_array[i] << "\t\t"
                   << velocity_array[i] << "\t\t"
                   << thrust_array[i] << "\t"
-                  << acceleration_array[i] << "\t\t"
-                  << target_altitude_array[i] << "\n";
+                  << acceleration_array[i] << "\n";
     }
 }
 
 double get_target_altitude(double time)
 {
     return time <= 30.0 ? 100.0 : 40.0;
+}
+
+void SimulationResults::plot() const
+{
+
+    MSPlot::Figure fig(800, 800); // Acommodate 4 subplots
+
+    // Create 5 subplots vertically
+
+    fig.addSubplot(5, 1, 0); // Target Altitude
+    fig.plot(time_array, target_altitude_array, "Target Altitude (m)", Color(Color::Red));
+
+    fig.addSubplot(5, 1, 1); // Altitude
+    fig.plot(time_array, altitude_array, "Altitude (m)", Color(Color::Blue));
+
+    fig.addSubplot(5, 1, 2); // Velocity
+    fig.plot(time_array, velocity_array, "Velocity (m/s)", Color(Color::Green));
+
+    fig.addSubplot(5, 1, 3); // Thrust
+    fig.plot(time_array, thrust_array, "Thrust (N)", Color(Color::Purple));
+
+    fig.addSubplot(5, 1, 4); // Accelleration
+    fig.plot(time_array, acceleration_array, "Accelleration (m/s²)", Color(Color::Orange));
+
+    const std::string filename = "msplot.svg";
+
+    if (fig.save(filename)) {
+        std::cerr << "MSPlot saved as " << filename << std::endl;
+        system(("open " + filename)
+                   .c_str()); // Open the file in the default browser
+    } else {
+        std::cerr << "Failed to save MSPlot as " << filename << std::endl;
+    }
+
+
 }
