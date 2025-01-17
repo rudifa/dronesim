@@ -43,17 +43,21 @@ int main()
     // Create 4 subplots vertically
 
     fig.addSubplot(4, 1, 0); // Altitude
-    fig.plot(time_array, altitude_array, "Altitude (m)", Color(Color::Blue));
-    fig.plot(time_array, target_altitude_array, "Target Altitude", Color(Color::Red));
+    fig.plot(time_array, altitude_array, Color(Color::Blue));
+    fig.plot(time_array, target_altitude_array, Color(Color::Red));
+    fig.title("Altitude (m)");
 
     fig.addSubplot(4, 1, 1); // Velocity
-    fig.plot(time_array, velocity_array, "Velocity (m/s)", Color(Color::Green));
+    fig.plot(time_array, velocity_array, Color(Color::Green));
+    fig.title("Velocity (m/s)");
 
     fig.addSubplot(4, 1, 2); // Sawtooth
-    fig.plot(time_array, sawtooth_array, "Sawtooth Wave",  Color(Color::Purple));
+    fig.plot(time_array, sawtooth_array,  Color(Color::Purple));
+    fig.title("Sawtooth Wave");
 
     fig.addSubplot(4, 1, 3); // Triangle
-    fig.plot(time_array, triangle_array, "Triangle Wave", Color(Color::Orange));
+    fig.plot(time_array, triangle_array, Color(Color::Orange));
+    fig.title("Triangle Wave");
 
 
     const std::string filename = "msplot.svg";
