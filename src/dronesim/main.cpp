@@ -17,11 +17,14 @@ int main()
         double target_altitude = get_target_altitude(current_time);
 
         double altitude_error = target_altitude - drone->get_altitude();
-        double speed_reference = altitude_controller->compute(altitude_error, time_step);
-        speed_reference = std::max(-MAX_VELOCITY, std::min(speed_reference, MAX_VELOCITY));
+        double speed_reference =
+            altitude_controller->compute(altitude_error, time_step);
+        speed_reference =
+            std::max(-MAX_VELOCITY, std::min(speed_reference, MAX_VELOCITY));
 
         double speed_error = speed_reference - drone->get_velocity();
-        double thrust_adjustment = speed_controller->compute(speed_error, time_step);
+        double thrust_adjustment =
+            speed_controller->compute(speed_error, time_step);
         drone->set_thrust(drone->get_thrust() + thrust_adjustment);
 
         double acceleration = drone->update(time_step);

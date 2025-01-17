@@ -1,3 +1,7 @@
-LineEnding: LF
-UseTab: Never
+BasedOnStyle: Google
+BreakBeforeBraces: Allman
 IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 80
+LineEnding: LF

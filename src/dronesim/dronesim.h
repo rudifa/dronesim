@@ -1,9 +1,9 @@
 #ifndef DRONESIM_H
 #define DRONESIM_H
 
-#include <vector>
-#include <memory>
 #include <iostream>
+#include <memory>
+#include <vector>
 
 #include "../msplot/msplot.hpp"
 
@@ -13,7 +13,7 @@ const double MAX_VELOCITY = 50.0;
 
 class Drone
 {
-private:
+   private:
     double mass;
     double rotor_area;
     double air_density;
@@ -23,8 +23,9 @@ private:
     double velocity;
     double thrust;
 
-public:
-    Drone(double mass, double rotor_area, double air_density, double C_L, double C_D);
+   public:
+    Drone(double mass, double rotor_area, double air_density, double C_L,
+          double C_D);
     double calculate_lift();
     double calculate_weight();
     double calculate_drag();
@@ -38,21 +39,21 @@ public:
 
 class PIDController
 {
-private:
+   private:
     double kp;
     double ki;
     double kd;
     double integral;
     double previous_error;
 
-public:
+   public:
     PIDController(double kp, double ki, double kd);
     double compute(double error, double time_step);
 };
 
 class SimulationResults
 {
-private:
+   private:
     std::vector<double> time_array;
     std::vector<double> altitude_array;
     std::vector<double> velocity_array;
@@ -60,9 +61,10 @@ private:
     std::vector<double> acceleration_array;
     std::vector<double> target_altitude_array;
 
-public:
+   public:
     SimulationResults(size_t num_steps);
-    void update(size_t i, double time, const Drone &drone, double acceleration, double target_altitude);
+    void update(size_t i, double time, const Drone &drone, double acceleration,
+                double target_altitude);
 
     void print() const;
     void plot() const;
@@ -70,4 +72,4 @@ public:
 
 double get_target_altitude(double time);
 
-#endif // DRONESIM_H
+#endif  // DRONESIM_H

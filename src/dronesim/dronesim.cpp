@@ -1,23 +1,24 @@
 #include "dronesim.h"
+
 #include <algorithm>
 #include <cmath>
 
-Drone::Drone(double mass, double rotor_area, double air_density, double C_L, double C_D)
-    : mass(mass), rotor_area(rotor_area), air_density(air_density),
-      C_L(C_L), C_D(C_D), altitude(0.0), velocity(0.0)
+Drone::Drone(double mass, double rotor_area, double air_density, double C_L,
+             double C_D)
+    : mass(mass),
+      rotor_area(rotor_area),
+      air_density(air_density),
+      C_L(C_L),
+      C_D(C_D),
+      altitude(0.0),
+      velocity(0.0)
 {
     thrust = calculate_weight();
 }
 
-double Drone::calculate_lift()
-{
-    return thrust;
-}
+double Drone::calculate_lift() { return thrust; }
 
-double Drone::calculate_weight()
-{
-    return mass * g;
-}
+double Drone::calculate_weight() { return mass * g; }
 
 double Drone::calculate_drag()
 {
@@ -49,7 +50,9 @@ double Drone::get_velocity() const { return velocity; }
 double Drone::get_thrust() const { return thrust; }
 
 PIDController::PIDController(double kp, double ki, double kd)
-    : kp(kp), ki(ki), kd(kd), integral(0), previous_error(0) {}
+    : kp(kp), ki(ki), kd(kd), integral(0), previous_error(0)
+{
+}
 
 double PIDController::compute(double error, double time_step)
 {
@@ -86,59 +89,55 @@ void SimulationResults::print() const
     std::cout << "Time\tAltitude\tVelocity\tThrust\tAcceleration\tTarget Alt\n";
     for (size_t i = 0; i < time_array.size(); ++i)
     {
-        std::cout << time_array[i] << "\t"
-                  << target_altitude_array[i] << "\t\t"
-                  << altitude_array[i] << "\t\t"
-                  << velocity_array[i] << "\t\t"
-                  << thrust_array[i] << "\t"
-                  << acceleration_array[i] << "\n";
+        std::cout << time_array[i] << "\t" << target_altitude_array[i] << "\t\t"
+                  << altitude_array[i] << "\t\t" << velocity_array[i] << "\t\t"
+                  << thrust_array[i] << "\t" << acceleration_array[i] << "\n";
     }
 }
 
-double get_target_altitude(double time)
-{
-    return time <= 30.0 ? 100.0 : 40.0;
-}
+double get_target_altitude(double time) { return time <= 30.0 ? 100.0 : 40.0; }
 
 void SimulationResults::plot() const
 {
-
-    MSPlot::Figure fig(800, 800); // Acommodate 4 subplots
+    MSPlot::Figure fig(800, 800);  // Acommodate 4 subplots
 
     // Create 5 subplots vertically
 
-    fig.addSubplot(5, 1, 0); // Target Altitude
+    fig.addSubplot(5, 1, 0);  // Target Altitude
     fig.plot(time_array, target_altitude_array, Color(Color::Red));
     fig.title("Target Altitude (m)");
     fig.xlabel("Time (s)");
 
-    fig.addSubplot(5, 1, 1); // Altitude
+    fig.addSubplot(5, 1, 1);  // Altitude
     fig.plot(time_array, altitude_array, Color(Color::Blue));
     fig.title("Altitude (m)");
     fig.xlabel("Time (s)");
 
-    fig.addSubplot(5, 1, 2); // Velocity
+    fig.addSubplot(5, 1, 2);  // Velocity
     fig.plot(time_array, velocity_array, Color(Color::Green));
     fig.title("Velocity (m/s)");
     fig.xlabel("Time (s)");
 
-    fig.addSubplot(5, 1, 3); // Thrust
+    fig.addSubplot(5, 1, 3);  // Thrust
     fig.plot(time_array, thrust_array, Color(Color::Purple));
     fig.title("Thrust (N)");
     fig.xlabel("Time (s)");
 
-    fig.addSubplot(5, 1, 4); // Accelleration
+    fig.addSubplot(5, 1, 4);  // Accelleration
     fig.plot(time_array, acceleration_array, Color(Color::Orange));
     fig.title("Accelleration (m/s²)");
     fig.xlabel("Time (s)");
 
     const std::string filename = "msplot.svg";
 
-    if (fig.save(filename)) {
+    if (fig.save(filename))
+    {
         std::cerr << "MSPlot saved as " << filename << std::endl;
         system(("open " + filename)
-                   .c_str()); // Open the file in the default browser
-    } else {
+                   .c_str());  // Open the file in the default browser
+    }
+    else
+    {
         std::cerr << "Failed to save MSPlot as " << filename << std::endl;
     }
 }
