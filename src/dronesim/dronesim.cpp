@@ -110,22 +110,27 @@ void SimulationResults::plot() const
     fig.addSubplot(5, 1, 0); // Target Altitude
     fig.plot(time_array, target_altitude_array, Color(Color::Red));
     fig.title("Target Altitude (m)");
+    fig.xlabel("Time (s)");
 
     fig.addSubplot(5, 1, 1); // Altitude
     fig.plot(time_array, altitude_array, Color(Color::Blue));
     fig.title("Altitude (m)");
+    fig.xlabel("Time (s)");
 
     fig.addSubplot(5, 1, 2); // Velocity
     fig.plot(time_array, velocity_array, Color(Color::Green));
     fig.title("Velocity (m/s)");
+    fig.xlabel("Time (s)");
 
     fig.addSubplot(5, 1, 3); // Thrust
     fig.plot(time_array, thrust_array, Color(Color::Purple));
     fig.title("Thrust (N)");
+    fig.xlabel("Time (s)");
 
     fig.addSubplot(5, 1, 4); // Accelleration
     fig.plot(time_array, acceleration_array, Color(Color::Orange));
     fig.title("Accelleration (m/s²)");
+    fig.xlabel("Time (s)");
 
     const std::string filename = "msplot.svg";
 

@@ -14,6 +14,8 @@ class MSPlot
     {
         std::vector<Point> data;
         std::string label;
+        std::string xlabel;
+        std::string ylabel;
         Color color;
         int x_pos;
         int y_pos;
@@ -28,10 +30,12 @@ class MSPlot
             int height;
             const std::vector<Point>& data;
             const std::string& p_title;
+            const std::string& x_label;
+            const std::string& y_label;
             const Color& color;
 
-            Plot(int x, int y, int w, int h, const std::vector<Point>& d, const std::string& p_title, const Color& c)
-                : x_pos(x), y_pos(y), width(w), height(h), data(d), p_title(p_title), color(c) {}
+            Plot(int x, int y, int w, int h, const std::vector<Point>& d, const std::string& p_title, const std::string& x_label, const std::string& y_label, const Color& c)
+                : x_pos(x), y_pos(y), width(w), height(h), data(d), p_title(p_title), x_label(x_label), y_label(y_label), color(c) {}
 
             Group render() const
             {
@@ -95,15 +99,15 @@ class MSPlot
                 }
 
                 // Add labels
-                Text x_label(Point(x_pos + width / 2, y_pos + height + 20), "X-axis", Fill(Color::Black), Font(12, "Arial"));
-                group << x_label;
+                Text xlabel(Point(x_pos + width / 2, y_pos + height + 20), x_label, Fill(Color::Black), Font(12, "Arial"));
+                group << xlabel;
 
-                Text y_label(Point(x_pos - 40, y_pos + height / 2), "Y-axis", Fill(Color::Black), Font(12, "Arial"));
-                y_label.setRotation(-90);
-                group << y_label;
+                Text ylabel(Point(x_pos - 40, y_pos + height / 2), y_label, Fill(Color::Black), Font(12, "Arial"));
+                ylabel.setRotation(-90);
+                group << ylabel;
 
-                Text title(Point(x_pos + width / 2, y_pos - 10), p_title, Fill(Color::Black), Font(14, "Arial"));
-                group << title;
+                Text ptitle(Point(x_pos + width / 2, y_pos - 10), p_title, Fill(Color::Black), Font(14, "Arial"));
+                group << ptitle;
 
                 // Add data polyline
                 Polyline polyline(Stroke(2, color));
@@ -133,7 +137,7 @@ class MSPlot
 
             // Create and render the Plot
             Plot plot(x_pos + l_margin, y_pos + tb_margin, plot_width, plot_height,
-                      data, label, color);
+                      data, label, xlabel, ylabel, color);
             group << plot.render();
 
             // Add border around the entire subplot
@@ -209,13 +213,21 @@ class MSPlot
             subplot.color = color;
         }
         void title(const std::string &title) {
-
             auto &subplot = getCurrentSubplotFrame();
             subplot.label = title;
         }
 
-        SubplotFrame &getCurrentSubplotFrame()
-        {
+        void xlabel(const std::string &label) {
+            auto &subplot = getCurrentSubplotFrame();
+            subplot.xlabel = label;
+        }
+
+        void ylabel(const std::string &label) {
+             auto &subplot = getCurrentSubplotFrame();
+             subplot.ylabel = label;
+        }
+
+        SubplotFrame &getCurrentSubplotFrame() {
             if (subplotFrames.empty()) {
                 throw std::runtime_error(
                     "No subplot available. Call addSubplot first.");
