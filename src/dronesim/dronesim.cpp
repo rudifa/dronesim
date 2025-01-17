@@ -128,16 +128,17 @@ void SimulationResults::plot() const
     fig.title("Accelleration (m/s²)");
     fig.xlabel("Time (s)");
 
-    const std::string filename = "msplot.svg";
+    const std::string filename = "dronesim.svg";
 
     if (fig.save(filename))
     {
-        std::cerr << "MSPlot saved as " << filename << std::endl;
+        std::cerr << "Simulation plot saved as " << filename << std::endl;
         system(("open " + filename)
                    .c_str());  // Open the file in the default browser
     }
     else
     {
-        std::cerr << "Failed to save MSPlot as " << filename << std::endl;
+        std::cerr << "Failed to save Simulation plot as " << filename
+                  << std::endl;
     }
 }

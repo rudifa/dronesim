@@ -1,18 +1,24 @@
 # dronesim
 
-> a 1-D drone simulation
+## 1-D simulation in python
+
+> a 1-D drone simulation with `python/dronesim.py`
 
 ![Simulation Image](img/dronesim-02.png)
 
-## build with cmake
+## 1-D simulation in C++
+
+### build with cmake
 
 ```
 dronesim % mkdir -p build && cd build
 build % cmake ..
-build % cmake --build .
+
+bulid % make
+build % cmake --build . # same as make
 ```
 
-## simple build and run
+## simple build and run, without cmake
 
 ```
 dronesim %cd src/dronesim

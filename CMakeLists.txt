@@ -15,9 +15,26 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
+# Configure testing
+include(CTest)
+
 # Add subdirectories
 add_subdirectory(src)
 add_subdirectory(tests)
+
+# Add custom targets for building and running tests
+add_custom_target(tests
+    DEPENDS build_tests
+    COMMENT "Building all tests"
+)
+
+add_custom_target(check
+    DEPENDS run_tests
+    COMMENT "Running all tests"
+)
+
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
 
 # Set the source directory for the simple-svg executable
 set(SIMPLE_SVG_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/simple_svg)
@@ -56,6 +73,13 @@ set_target_properties(msplot_demo PROPERTIES
 
 get_target_property(MSPLOT_DEMO_OUTPUT_DIR msplot_demo RUNTIME_OUTPUT_DIRECTORY)
 message("msplot_demo will be built in: ${MSPLOT_DEMO_OUTPUT_DIR}")
+
+# Add a custom target to run all tests
+add_custom_target(run_all_tests
+    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Running all tests"
+)
 
 # Add rules for dronesim
 set(DRONESIM_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/dronesim)

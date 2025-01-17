@@ -18,12 +18,12 @@
 // setup and teardown code for multiple tests. It is suitable for tests that
 // need to share common setup, state, or helper functions.
 
-#include "/opt/homebrew/Cellar/googletest/1.15.2/include/gtest/gtest.h"
+#include <gtest/gtest.h>
 
 // #include <gtest/gtest.h>
 #include <sstream>
 
-#include "../simple_svg_1.0.0.hpp"
+#include "../src/simple_svg/simple_svg_1.0.0.hpp"
 
 using namespace svg;
 
@@ -55,16 +55,17 @@ TEST_F(SVGTest, ColorTest)
     Color red(255, 0, 0);
     EXPECT_EQ(red.toString(layout), "rgb(255,0,0)");
 
-    Color blue = Color::Blue;
+    Color blue = Color(Color::Blue);
     EXPECT_EQ(blue.toString(layout), "rgb(0,0,255)");
 
-    Color transparent = Color::Transparent;
+    Color transparent = Color(Color::Transparent);
     EXPECT_EQ(transparent.toString(layout), "none");
 }
 
 TEST_F(SVGTest, ShapeTest)
 {
-    Circle circle(Point(50, 50), 20, Fill(Color::Red), Stroke(2, Color::Blue));
+    Circle circle(Point(50, 50), 20, Fill(Color::Red),
+                  Stroke(2, Color(Color::Blue)));
     std::string circleStr = circle.toString(layout);
 
     // std::cout << "ShapeTest circleStr: " << circleStr << std::endl;
@@ -78,7 +79,7 @@ TEST_F(SVGTest, ShapeTest)
 
 TEST_F(SVGTest, PolygonTest)
 {
-    Polygon polygon(Fill(Color::Green), Stroke(1, Color::Black));
+    Polygon polygon(Fill(Color::Green), Stroke(1, Color(Color::Black)));
     polygon << Point(0, 0) << Point(100, 0) << Point(100, 100) << Point(0, 100);
     std::string polygonStr = polygon.toString(layout);
     EXPECT_TRUE(polygonStr.find("points=\"0,0 100,0 100,100 0,100 \"") !=
@@ -136,11 +137,11 @@ TEST_F(SVGTest, TextTestRotation)
 TEST_F(SVGTest, LineChartTest)
 {
     LineChart chart;
-    Polyline line1(Stroke(1, Color::Blue));
+    Polyline line1(Stroke(1, Color(Color::Blue)));
     line1 << Point(0, 0) << Point(10, 10) << Point(20, 20);
     chart << line1;
 
-    Polyline line2(Stroke(1, Color::Red));
+    Polyline line2(Stroke(1, Color(Color::Red)));
     line2 << Point(0, 20) << Point(10, 10) << Point(20, 0);
     chart << line2;
 
@@ -176,7 +177,7 @@ TEST(SimpleSvgTest, CircleTest)
 {
     Document doc;
     doc << Circle(Point(100, 100), 50, Fill(Color::Red),
-                  Stroke(2, Color::Blue));
+                  Stroke(2, Color(Color::Blue)));
     std::string docStr = doc.toString();
 
     // std::cout << "CircleTest SVG:\n"
@@ -192,7 +193,7 @@ TEST(SimpleSvgTest, CircleTest)
 TEST(SimpleSvgTest, PolygonTest)
 {
     Document doc;
-    Polygon polygon(Fill(Color::Green), Stroke(1, Color::Black));
+    Polygon polygon(Fill(Color::Green), Stroke(1, Color(Color::Black)));
     polygon << Point(0, 0) << Point(100, 0) << Point(100, 100) << Point(0, 100);
     doc << polygon;
 
@@ -212,9 +213,9 @@ TEST(SimpleSvgTest, LineChartTest)
 {
     Document doc;
     LineChart chart;
-    Polyline line1(Stroke(1, Color::Blue));
+    Polyline line1(Stroke(1, Color(Color::Blue)));
     line1 << Point(0, 0) << Point(10, 10) << Point(20, 20);
-    Polyline line2(Stroke(1, Color::Red));
+    Polyline line2(Stroke(1, Color(Color::Red)));
     line2 << Point(0, 20) << Point(10, 10) << Point(20, 0);
     chart << line1 << line2;
     doc << chart;
@@ -228,7 +229,7 @@ TEST(SimpleSvgTest, LineChartTest)
 TEST_F(SVGTest, PathTest)
 {
     Document doc;
-    Path path(Fill(Color::Yellow), Stroke(2, Color::Purple));
+    Path path(Fill(Color::Yellow), Stroke(2, Color(Color::Purple)));
     path << Point(0, 0) << Point(100, 0) << Point(100, 100);
     path.startNewSubPath();
     path << Point(0, 100) << Point(0, 0);
@@ -254,7 +255,7 @@ TEST_F(SVGTest, ColorTest2)
 
 TEST(SimpleSvgTest, StrokeTest)
 {
-    Stroke stroke(3, Color::Blue, true);
+    Stroke stroke(3, Color(Color::Blue), true);
     Document doc;
     doc << Rectangle(Point(0, 0), 100, 100, Fill(), stroke);
     std::string docStr = doc.toString();
@@ -274,7 +275,7 @@ TEST(SimpleSvgTest, StrokeTest)
 TEST(SimpleSvgTest, GroupTest)
 {
     Document doc;
-    Group group(Fill(Color::Red), Stroke(2, Color::Black));
+    Group group(Fill(Color::Red), Stroke(2, Color(Color::Black)));
     group << Circle(Point(100, 100), 50, Fill(Color::Blue));
     group << Rectangle(Point(200, 200), 100, 50, Fill(Color::Green));
     doc << group;
