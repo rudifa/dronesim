@@ -1,5 +1,7 @@
-
 # https://gist.github.com/GhostofGoes/94580e76cd251972b15b4821c8a06f59
+
+# Cpp build
+bin/
 
 # Editors
 .vscode/
@@ -126,3 +128,63 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+# Compiled object files
+*.o
+*.obj
+
+# Compiled dynamic libraries
+*.so
+*.dll
+
+# Compiled static libraries
+build/
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+<<<<<<< HEAD
+# Build directories
+/build/
+/bin/
+/obj/
+
+# IDE-specific files
+*.layout
+*.depend
+
+# Precompiled headers
+*.gch
+*.pch
+
+# macOS
+.DS_Store
+=======
+# Build products
+bin/
+>>>>>>> simple_svg/main
