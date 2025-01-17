@@ -8,17 +8,37 @@
 
 ## 1-D simulation in C++
 
-### build with cmake
+> a 1-D drone simulation with `bin/dronesim`
+
+![Simulation Image](img/dronesim-03.png)
+
+### build cmake files
 
 ```
 dronesim % mkdir -p build && cd build
 build % cmake ..
+```
 
-bulid % make
+### build the `dronesim` application with cmake
+
+```
+build % make
 build % cmake --build . # same as make
 ```
 
-## simple build and run, without cmake
+### run the `dronesim` application
+
+```
+dronesim % bin/dronesim
+```
+
+### build and run tests
+
+build % make tests # build tests of simple_svg
+
+build % make check # run tests of simple_svg
+
+### simple build and run, without cmake
 
 ```
 dronesim %cd src/dronesim
@@ -26,17 +46,14 @@ dronesim %g++ -std=c++23 -O2 main.cpp dronesim.cpp -o bin/dronesim
 dronesim %bin/dronesim
 ```
 
-Run will print a table of results:
+### output file
 
-```
-dronesim % bin/dronesim                                                                     [cpp-print-results ↑1|●3✚1]
-Time    Altitude    Velocity    Thrust  Acceleration    Target Alt
-0   0.1019      1.019       30  10.19       100
-0.1 0.305658        2.03758     30  10.1858     100
-0.2 0.611146        3.05488     30  10.173      100
-...
-```
+Running `dronesim` produces the `dronesim.svg` file, which can be viewed in a browser.
 
-# MSPlot : a math simple plot
+## `msplot`
 
-> A tiny subset of mathplotlib features
+> `msplot` implements a tiny subset of mathplotlib features in C++.
+
+## `simple_svg`
+
+> `simple_svg` is a simple SVG writer in C++.
