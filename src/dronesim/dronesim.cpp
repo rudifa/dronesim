@@ -133,8 +133,13 @@ void SimulationResults::plot() const
     if (fig.save(filename))
     {
         std::cerr << "Simulation plot saved as " << filename << std::endl;
-        system(("open " + filename)
-                   .c_str());  // Open the file in the default browser
+        #ifdef __APPLE__
+            system(("open " + filename).c_str()); // Open the file on macOS
+        #elif __linux__
+            system(("xdg-open " + filename).c_str()); // Open the file on Linux
+        #else
+            std::cerr << "Please open the file manually: " << filename << std::endl;
+        #endif
     }
     else
     {
