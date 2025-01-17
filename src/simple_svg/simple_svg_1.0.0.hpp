@@ -42,7 +42,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SIMPLE_SVG_HPP
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
+#include <memory>
 #include <numeric>
 #include <optional>
 #include <sstream>
