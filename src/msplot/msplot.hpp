@@ -163,7 +163,7 @@ class MSPlot
 
     class Figure
     {
-        std::vector<SubplotFrame> subplots;
+        std::vector<SubplotFrame> subplotFrames;
         int width;
         int height;
         Document svg;
@@ -183,12 +183,12 @@ class MSPlot
                 throw std::out_of_range("Subplot position exceeds grid size");
             }
 
-            SubplotFrame plot;
-            plot.full_width = width / cols;
-            plot.full_height = height / rows;
-            plot.x_pos = (position % cols) * plot.full_width;
-            plot.y_pos = (position / cols) * plot.full_height;
-            subplots.push_back(plot);
+            SubplotFrame frame;
+            frame.full_width = width / cols;
+            frame.full_height = height / rows;
+            frame.x_pos = (position % cols) * frame.full_width;
+            frame.y_pos = (position / cols) * frame.full_height;
+            subplotFrames.push_back(frame);
         }
 
         void plot(const std::vector<double> &x, const std::vector<double> &y,
@@ -201,7 +201,7 @@ class MSPlot
                 throw std::invalid_argument("Data vectors cannot be empty");
             }
 
-            auto &subplot = getCurrentSubplot();
+            auto &subplot = getCurrentSubplotFrame();
             subplot.data.clear(); // Clear any existing data
             for (size_t i = 0; i < x.size(); i++) {
                 subplot.data.push_back(Point(x[i], y[i]));
@@ -210,23 +210,23 @@ class MSPlot
         }
         void title(const std::string &title) {
 
-            auto &subplot = getCurrentSubplot();
+            auto &subplot = getCurrentSubplotFrame();
             subplot.label = title;
         }
 
-        SubplotFrame &getCurrentSubplot()
+        SubplotFrame &getCurrentSubplotFrame()
         {
-            if (subplots.empty()) {
+            if (subplotFrames.empty()) {
                 throw std::runtime_error(
                     "No subplot available. Call addSubplot first.");
             }
-            return subplots.back();
+            return subplotFrames.back();
         }
 
         std::string toString()
         {
             Group figure_group;
-            for (const auto &subplot : subplots)
+            for (const auto &subplot : subplotFrames)
             {
                 figure_group << subplot.render();
             }
@@ -237,7 +237,7 @@ class MSPlot
 
         bool save(const std::string& filename)
         {
-            if (subplots.empty())
+            if (subplotFrames.empty())
             {
                 std::cerr << "No plots to save" << std::endl;
             }
