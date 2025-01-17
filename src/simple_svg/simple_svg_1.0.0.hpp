@@ -44,6 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include <iostream>
 #include <numeric>
+#include <optional>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -65,27 +66,6 @@ inline std::string elemEnd(std::string const &element_name) {
 }
 inline std::string emptyElemEnd() { return "/>\n"; }
 
-// Quick optional return type.  This allows functions to return an invalid
-//  value if no good return is possible.  The user checks for validity
-//  before using the returned value.
-template <typename T> class optional {
-  public:
-    explicit optional<T>(T const &type) : valid(true), type(type) {}
-    optional<T>() : valid(false), type(T()) {}
-    T *operator->() {
-        // If we try to access an invalid value, an exception is thrown.
-        if (!valid)
-            throw std::exception();
-
-        return &type;
-    }
-    // Test for validity.
-    bool operator!() const { return !valid; }
-
-  private:
-    bool valid;
-    T type;
-};
 
 struct Dimensions {
     Dimensions(double width, double height) : width(width), height(height) {}
@@ -113,9 +93,9 @@ struct Point {
     }
 };
 
-inline optional<Point> getMinPoint(std::vector<Point> const &points) {
+inline std::optional<Point> getMinPoint(std::vector<Point> const &points) {
     if (points.empty())
-        return optional<Point>();
+        return std::optional<Point>();
 
     Point min = points[0];
     for (unsigned i = 0; i < points.size(); ++i) {
@@ -124,11 +104,11 @@ inline optional<Point> getMinPoint(std::vector<Point> const &points) {
         if (points[i].y < min.y)
             min.y = points[i].y;
     }
-    return optional<Point>(min);
+    return std::optional<Point>(min);
 }
-inline optional<Point> getMaxPoint(std::vector<Point> const &points) {
+inline std::optional<Point> getMaxPoint(std::vector<Point> const &points) {
     if (points.empty())
-        return optional<Point>();
+        return std::optional<Point>();
 
     Point max = points[0];
     for (unsigned i = 0; i < points.size(); ++i) {
@@ -137,7 +117,7 @@ inline optional<Point> getMaxPoint(std::vector<Point> const &points) {
         if (points[i].y > max.y)
             max.y = points[i].y;
     }
-    return optional<Point>(max);
+    return std::optional<Point>(max);
 }
 
 struct Size {
@@ -831,13 +811,13 @@ class LineChart : public Shape {
     [[maybe_unused]] double scale;
     std::vector<Polyline> polylines;
 
-    // optional<Dimensions> getDimensions() const
+    // std::optional<Dimensions> getDimensions() const
     // {
     //     if (polylines.empty())
-    //         return optional<Dimensions>();
+    //         return std::optional<Dimensions>();
 
-    //     optional<Point> min = getMinPoint(polylines[0].points);
-    //     optional<Point> max = getMaxPoint(polylines[0].points);
+    //     std::optional<Point> min = getMinPoint(polylines[0].points);
+    //     std::optional<Point> max = getMaxPoint(polylines[0].points);
     //     for (unsigned i = 0; i < polylines.size(); ++i)
     //     {
     //         if (getMinPoint(polylines[i].points)->x < min->x)
@@ -850,7 +830,7 @@ class LineChart : public Shape {
     //             max->y = getMaxPoint(polylines[i].points)->y;
     //     }
 
-    //     return optional<Dimensions>(Dimensions(max->x - min->x, max->y -
+    //     return std::optional<Dimensions>(Dimensions(max->x - min->x, max->y -
     //     min->y));
     // }
     std::optional<Dimensions> getDimensions() const {
