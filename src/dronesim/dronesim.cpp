@@ -1,4 +1,5 @@
 #include "dronesim.h"
+#include "tracer.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -13,6 +14,7 @@ Drone::Drone(double mass, double rotor_area, double air_density, double C_L,
       altitude(0.0),
       velocity(0.0)
 {
+    TRACE;
     thrust = calculate_weight();
 }
 
@@ -22,11 +24,13 @@ double Drone::calculate_weight() { return mass * g; }
 
 double Drone::calculate_drag()
 {
+    TRACE;
     return C_D * 0.5 * air_density * rotor_area * pow(velocity, 2);
 }
 
 double Drone::update(double time_step)
 {
+    TRACE;
     double lift = calculate_lift();
     double weight = calculate_weight();
     double drag = calculate_drag();
@@ -42,6 +46,7 @@ double Drone::update(double time_step)
 
 void Drone::set_thrust(double new_thrust)
 {
+    TRACE;
     thrust = std::max(0.0, std::min(new_thrust, MAX_THRUST));
 }
 
@@ -52,10 +57,12 @@ double Drone::get_thrust() const { return thrust; }
 PIDController::PIDController(double kp, double ki, double kd)
     : kp(kp), ki(ki), kd(kd), integral(0), previous_error(0)
 {
+    TRACE;
 }
 
 double PIDController::compute(double error, double time_step)
 {
+    TRACE;
     integral += error * time_step;
     double derivative = (error - previous_error) / time_step;
     double output = kp * error + ki * integral + kd * derivative;
@@ -65,6 +72,7 @@ double PIDController::compute(double error, double time_step)
 
 SimulationResults::SimulationResults(size_t num_steps)
 {
+    TRACE;
     time_array.resize(num_steps);
     altitude_array.resize(num_steps);
     velocity_array.resize(num_steps);
@@ -76,6 +84,7 @@ SimulationResults::SimulationResults(size_t num_steps)
 void SimulationResults::update(size_t i, double time, const Drone &drone,
                                double acceleration, double target_altitude)
 {
+    TRACE;
     time_array[i] = time;
     altitude_array[i] = drone.get_altitude();
     velocity_array[i] = drone.get_velocity();
@@ -86,6 +95,7 @@ void SimulationResults::update(size_t i, double time, const Drone &drone,
 
 void SimulationResults::print() const
 {
+    TRACE;
     std::cout << "Time\tAltitude\tVelocity\tThrust\tAcceleration\tTarget Alt\n";
     for (size_t i = 0; i < time_array.size(); ++i)
     {
@@ -99,6 +109,7 @@ double get_target_altitude(double time) { return time <= 30.0 ? 100.0 : 40.0; }
 
 void SimulationResults::plot() const
 {
+    TRACE;
     MSPlot::Figure fig(800, 800);  // Acommodate 4 subplots
 
     // Create 5 subplots vertically

@@ -1,7 +1,8 @@
 #include "dronesim.h"
-
+#include "tracer.hpp"
 int main()
 {
+    TRACE;
     const double time_step = 0.1;
     const double total_time = 60.0;
     const size_t num_steps = static_cast<size_t>(total_time / time_step);
